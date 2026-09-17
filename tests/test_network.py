@@ -33,3 +33,29 @@ def test_reset_clears_resident_and_pending_state():
 
     assert np.allclose(net.state, 0.0)
     assert np.allclose(net.pending_events, 0.0)
+
+
+def test_learning_updates_only_active_sensor_routes_and_preserves_budget():
+    net = NSSNNetwork.create(seed=12, sensors=4, nodes=6, state_dim=5, routes_per_node=2)
+    before = net.sensor_access.copy()
+    support = before > 0.0
+
+    net.step(np.array([1.0, 0.0, 0.0, 0.0]), learn=True)
+
+    assert not np.allclose(net.sensor_access[0], before[0])
+    assert np.allclose(net.sensor_access[1:], before[1:])
+    assert np.array_equal(net.sensor_access > 0.0, support)
+    assert np.all(net.sensor_access >= 0.0)
+    assert np.allclose(net.sensor_access.sum(axis=2), 1.0)
+
+
+def test_learning_false_keeps_route_access_fixed():
+    net = NSSNNetwork.create(seed=13, sensors=4, nodes=6, state_dim=5, routes_per_node=2)
+    sensor_before = net.sensor_access.copy()
+    recurrent_before = net.recurrent_access.copy()
+
+    net.step(np.ones(4), learn=False)
+    net.step(np.zeros(4), learn=False)
+
+    assert np.allclose(net.sensor_access, sensor_before)
+    assert np.allclose(net.recurrent_access, recurrent_before)
