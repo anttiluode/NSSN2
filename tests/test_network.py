@@ -59,3 +59,35 @@ def test_learning_false_keeps_route_access_fixed():
 
     assert np.allclose(net.sensor_access, sensor_before)
     assert np.allclose(net.recurrent_access, recurrent_before)
+
+
+def test_predictive_learning_remembers_local_expectation_and_reduces_repeat_surprise():
+    net = NSSNNetwork.create(
+        seed=21,
+        sensors=4,
+        nodes=6,
+        state_dim=5,
+        routes_per_node=2,
+        learning_mode="predictive",
+    )
+    event = np.array([1.0, 0.0, 0.0, 0.0])
+    before = net.sensor_access.copy()
+
+    net.reset_state()
+    first = net.step(event, learn=True)
+    after_first = net.sensor_access.copy()
+
+    net.reset_state()
+    second = net.step(event, learn=True)
+    after_second = net.sensor_access.copy()
+
+    first_delta = np.linalg.norm(after_first[0] - before[0])
+    second_delta = np.linalg.norm(after_second[0] - after_first[0])
+
+    assert first.mean_surprise > 0.0
+    assert second.mean_surprise < first.mean_surprise
+    assert first_delta > 0.0
+    assert second_delta < first_delta
+    assert np.allclose(net.sensor_prediction[1:], 0.0)
+    assert np.array_equal(net.sensor_access > 0.0, before > 0.0)
+    assert np.allclose(net.sensor_access.sum(axis=2), 1.0)
