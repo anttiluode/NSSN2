@@ -1,0 +1,57 @@
+{
+  "claim_boundary": {
+    "biological_implementation_established": false,
+    "common_world_tape": true,
+    "demo_is_evidence": false,
+    "labels_used_for_learning": false,
+    "note": "v0 isolates whether local route adaptation improves cause-specific resident responses on a repeated synthetic world. It does not establish object concepts, a predictive world model, or biological realism.",
+    "world_model_established": false
+  },
+  "configuration": {
+    "causes": 3,
+    "episode_internal_ticks": 3,
+    "episodes": 360,
+    "eval_episodes": 120,
+    "fast_state_reset_between_episodes": true,
+    "nodes": 8,
+    "noise": 0.2,
+    "routes_per_node": 2,
+    "seed": 17,
+    "sensor_threshold": 0.42,
+    "sensors": 8,
+    "state_dim": 5,
+    "train_episodes": 240
+  },
+  "event_accounting": {
+    "frozen_recurrent_events": 1784,
+    "frozen_sensor_events": 1071,
+    "learner_recurrent_events": 1763,
+    "learner_sensor_events": 1071,
+    "same_external_sensory_budget": true
+  },
+  "frozen": {
+    "between_cause_distance": 0.12301645328292511,
+    "heldout_accuracy": 0.8916666666666667,
+    "route_change_norm": 0.0,
+    "route_specialization": 0.5735652033599073,
+    "separation_ratio": 1.390766157388817,
+    "within_cause_distance": 0.08845229129955982
+  },
+  "learner": {
+    "between_cause_distance": 0.11649132623046084,
+    "final_route_specialization": 0.5616134754701286,
+    "heldout_accuracy": 0.8583333333333333,
+    "initial_route_specialization": 0.5735652033599073,
+    "route_change_norm": 2.4219283707093058,
+    "route_specialization_delta": -0.011951727889778718,
+    "separation_ratio": 1.4590041207883373,
+    "within_cause_distance": 0.07984304127086193
+  },
+  "shuffled": {
+    "chance": 0.3333333333333333,
+    "mean_accuracy": 0.33880208333333334,
+    "repeats": 64,
+    "std_accuracy": 0.04096330161245619
+  },
+  "verdict": "FAIL_DEVELOPING_RESIDENT_STRUCTURE"
+}
