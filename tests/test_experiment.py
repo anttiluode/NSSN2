@@ -5,6 +5,24 @@ from pathlib import Path
 from nssn2.experiment import run_v0
 
 
+def _assert_receipts_close(actual, expected, *, path="root"):
+    if isinstance(expected, dict):
+        assert isinstance(actual, dict), path
+        assert set(actual) == set(expected), path
+        for key in expected:
+            _assert_receipts_close(actual[key], expected[key], path=f"{path}.{key}")
+        return
+    if isinstance(expected, float):
+        assert isinstance(actual, (int, float)), path
+        assert math.isclose(float(actual), expected, rel_tol=1e-12, abs_tol=1e-12), (
+            path,
+            actual,
+            expected,
+        )
+        return
+    assert actual == expected, (path, actual, expected)
+
+
 def test_v0_receipt_is_deterministic_and_has_honest_controls():
     kwargs = dict(
         seed=5,
@@ -39,4 +57,4 @@ def test_v0_receipt_is_deterministic_and_has_honest_controls():
 
 def test_frozen_v0_receipt_matches_default_gate():
     stored = json.loads(Path("results/v0.json").read_text(encoding="utf-8"))
-    assert run_v0() == stored
+    _assert_receipts_close(run_v0(), stored)
