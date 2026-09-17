@@ -1,7 +1,0 @@
-Verified branch head before PR: 04dd2cd70738f846e3b07b5a85c2bffb49717d6b
-CI run: 35232847768
-Python 3.11: success
-Python 3.12: success
-v0 receipt: regenerated
-v1 12-seed receipt: regenerated
-browser JavaScript: node --check success
