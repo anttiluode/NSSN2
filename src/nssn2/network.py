@@ -136,6 +136,7 @@ class NSSNNetwork:
             residual = target_state - prediction
             desired = np.abs(residual[support]) + 0.03
             surprise = float(np.linalg.norm(residual[support]) / np.sqrt(np.count_nonzero(support)))
+            plasticity_gate = min(1.0, surprise)
             prediction[...] = (
                 (1.0 - self.prediction_rate) * prediction
                 + self.prediction_rate * target_state
@@ -143,9 +144,10 @@ class NSSNNetwork:
         else:
             desired = np.abs(target_state[support]) + 0.03
             surprise = 0.0
+            plasticity_gate = 1.0
 
         desired /= desired.sum()
-        eta = min(0.5, self.learning_rate * float(amplitude))
+        eta = min(0.5, self.learning_rate * float(amplitude) * plasticity_gate)
         updated = (1.0 - eta) * access[support] + eta * desired
         updated = np.maximum(updated, 1e-12)
         updated /= updated.sum()
