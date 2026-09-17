@@ -1,0 +1,48 @@
+{
+  "configuration": {
+    "episodes_per_seed": 360,
+    "seed_count": 12,
+    "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    "noise": 0.2,
+    "sensor_threshold": 0.42,
+    "frozen_min_median_margin": 0.01,
+    "frozen_min_paired_wins": 8,
+    "frozen_surprise_decline_ratio": 0.9
+  },
+  "aggregate": {
+    "all_external_sensory_budgets_matched": true,
+    "frozen_median_accuracy": 0.9,
+    "hebbian_median_accuracy": 0.8708333333333333,
+    "predictive_median_accuracy": 0.8833333333333333,
+    "predictive_median_surprise_late_over_early": 0.9319191714061908,
+    "predictive_vs_frozen_median_margin": -0.01666666666666672,
+    "predictive_vs_frozen_wins": 3,
+    "predictive_vs_hebbian_median_margin": 0.012499999999999956,
+    "predictive_vs_hebbian_wins": 6
+  },
+  "seed_summary": [
+    {"seed":0,"predictive_accuracy":0.8666666666666667,"hebbian_accuracy":0.8666666666666667,"frozen_accuracy":0.8916666666666667,"surprise_late_over_early":0.9267173696618731,"predictive_route_change_norm":0.8822332163906956,"same_external_sensory_budget":true},
+    {"seed":1,"predictive_accuracy":0.95,"hebbian_accuracy":0.9583333333333334,"frozen_accuracy":0.925,"surprise_late_over_early":0.9159427611239378,"predictive_route_change_norm":1.051776516270951,"same_external_sensory_budget":true},
+    {"seed":2,"predictive_accuracy":0.9,"hebbian_accuracy":0.875,"frozen_accuracy":0.9083333333333333,"surprise_late_over_early":0.9440470114916654,"predictive_route_change_norm":1.0096858270657796,"same_external_sensory_budget":true},
+    {"seed":3,"predictive_accuracy":0.8,"hebbian_accuracy":0.8583333333333333,"frozen_accuracy":0.85,"surprise_late_over_early":0.960273274379292,"predictive_route_change_norm":1.090691084354135,"same_external_sensory_budget":true},
+    {"seed":4,"predictive_accuracy":0.9333333333333333,"hebbian_accuracy":0.9416666666666667,"frozen_accuracy":0.9416666666666667,"surprise_late_over_early":0.9413963515560422,"predictive_route_change_norm":1.2582838614553988,"same_external_sensory_budget":true},
+    {"seed":5,"predictive_accuracy":0.9916666666666667,"hebbian_accuracy":0.8833333333333333,"frozen_accuracy":1.0,"surprise_late_over_early":0.904572104314302,"predictive_route_change_norm":1.1070556098173865,"same_external_sensory_budget":true},
+    {"seed":6,"predictive_accuracy":0.9666666666666667,"hebbian_accuracy":0.9333333333333333,"frozen_accuracy":0.9833333333333333,"surprise_late_over_early":0.9315505094381742,"predictive_route_change_norm":1.4314916459002855,"same_external_sensory_budget":true},
+    {"seed":7,"predictive_accuracy":0.8416666666666667,"hebbian_accuracy":0.8166666666666667,"frozen_accuracy":0.85,"surprise_late_over_early":0.9240156760977128,"predictive_route_change_norm":1.0780239982579778,"same_external_sensory_budget":true},
+    {"seed":8,"predictive_accuracy":0.8583333333333333,"hebbian_accuracy":0.8416666666666667,"frozen_accuracy":0.8666666666666667,"surprise_late_over_early":1.0021109877137984,"predictive_route_change_norm":1.0268610573453496,"same_external_sensory_budget":true},
+    {"seed":9,"predictive_accuracy":0.825,"hebbian_accuracy":0.8583333333333333,"frozen_accuracy":0.8166666666666667,"surprise_late_over_early":0.9357802468059491,"predictive_route_change_norm":1.2555286471180043,"same_external_sensory_budget":true},
+    {"seed":10,"predictive_accuracy":0.9583333333333334,"hebbian_accuracy":0.9416666666666667,"frozen_accuracy":0.95,"surprise_late_over_early":0.899345347453735,"predictive_route_change_norm":1.1388420633047833,"same_external_sensory_budget":true},
+    {"seed":11,"predictive_accuracy":0.825,"hebbian_accuracy":0.825,"frozen_accuracy":0.8333333333333334,"surprise_late_over_early":0.9322878333742075,"predictive_route_change_norm":0.8172892065624775,"same_external_sensory_budget":true}
+  ],
+  "verdict": "FAIL_PREDICTION_RESIDUAL_GATE",
+  "claim_boundary": {
+    "labels_used_for_learning": false,
+    "common_world_tape_within_seed": true,
+    "common_initialization_within_seed": true,
+    "global_loss_used": false,
+    "backpropagation_used": false,
+    "world_model_established": false,
+    "biological_implementation_established": false,
+    "note": "Frozen summary of the default 12-seed CI receipt. v1 tests whether route-local one-step prediction residual improves held-out cause decoding over both the failed v0 Hebbian learner and a frozen control."
+  }
+}
