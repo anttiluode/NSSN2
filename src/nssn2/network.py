@@ -28,6 +28,7 @@ class NSSNNetwork:
     active_threshold: float = 0.22
     active_slope: float = 0.08
     publish_threshold: float = 0.22
+    learning_rate: float = 0.12
 
     @classmethod
     def create(
@@ -107,6 +108,19 @@ class NSSNNetwork:
         z = np.clip((value - self.active_threshold) / self.active_slope, -40.0, 40.0)
         return 1.0 / (1.0 + np.exp(-z))
 
+    def _adapt_route(self, access: np.ndarray, target_state: np.ndarray, amplitude: float) -> None:
+        support = access > 0.0
+        if not np.any(support) or amplitude <= 1e-12:
+            return
+        desired = np.abs(target_state[support]) + 0.03
+        desired /= desired.sum()
+        eta = min(0.5, self.learning_rate * float(amplitude))
+        updated = (1.0 - eta) * access[support] + eta * desired
+        updated = np.maximum(updated, 1e-12)
+        updated /= updated.sum()
+        access[support] = updated
+        access[~support] = 0.0
+
     def step(self, sensor_event: np.ndarray, learn: bool = True) -> NetworkStep:
         sensor_event = np.asarray(sensor_event, dtype=float)
         if sensor_event.shape != (self.sensor_targets.shape[0],):
@@ -114,9 +128,10 @@ class NSSNNetwork:
         if np.any(sensor_event < 0.0):
             raise ValueError("sensor events must be non-negative")
 
+        previous_pending = self.pending_events.copy()
         node_inputs = np.zeros_like(self.state)
         active_sensor_channels = int(np.count_nonzero(sensor_event > 1e-12))
-        recurrent_sources = int(np.count_nonzero(self.pending_events > 1e-12))
+        recurrent_sources = int(np.count_nonzero(previous_pending > 1e-12))
 
         for sensor, amplitude in enumerate(sensor_event):
             if amplitude <= 1e-12:
@@ -124,7 +139,7 @@ class NSSNNetwork:
             for route, target in enumerate(self.sensor_targets[sensor]):
                 node_inputs[target] += float(amplitude) * self.sensor_access[sensor, route]
 
-        for source, amplitude in enumerate(self.pending_events):
+        for source, amplitude in enumerate(previous_pending):
             if amplitude <= 1e-12:
                 continue
             for route, target in enumerate(self.recurrent_targets[source]):
@@ -134,6 +149,18 @@ class NSSNNetwork:
         gate = self._sigmoid(np.abs(self.state))
         local_active = self.active_gain * gate * np.tanh(2.0 * self.state)
         self.state[...] = np.tanh(transported + node_inputs + local_active)
+
+        if learn:
+            for sensor, amplitude in enumerate(sensor_event):
+                if amplitude <= 1e-12:
+                    continue
+                for route, target in enumerate(self.sensor_targets[sensor]):
+                    self._adapt_route(self.sensor_access[sensor, route], self.state[target], float(amplitude))
+            for source, amplitude in enumerate(previous_pending):
+                if amplitude <= 1e-12:
+                    continue
+                for route, target in enumerate(self.recurrent_targets[source]):
+                    self._adapt_route(self.recurrent_access[source, route], self.state[target], float(amplitude))
 
         projected = np.abs(np.sum(self.readout * self.state, axis=1))
         node_activity = np.linalg.norm(self.state, axis=1) / np.sqrt(self.state.shape[1])
